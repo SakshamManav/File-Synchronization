@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Sync: Mobile Upload</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
+        .container { max-width: 400px; margin: 2em auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2em; }
+        #scan-btn, #send-btn { width: 100%; padding: 1em; font-size: 1.1em; margin-top: 1em; border-radius: 6px; border: none; background: #0078d4; color: #fff; cursor: pointer; }
+        #scan-btn:disabled, #send-btn:disabled { background: #aaa; }
+        #file-input { width: 100%; margin-top: 1em; }
+        #status { margin-top: 1em; color: #0078d4; }
+        #qr-reader { margin-top: 1em; }
+    </style>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+
+        <main class="max-w-md mx-auto px-4 py-12">
+            <div class="bg-white rounded-xl shadow-xl p-8 text-center">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Scan QR to Connect</h2>
+                <button id="scan-btn" class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">Scan QR Code</button>
+                <div id="qr-reader" style="display:none;"></div>
+                <div id="status" style="display:none;"></div>
+                <form id="upload-form" style="display:none; margin-top:2em;">
+                    <input type="file" id="file-input" multiple />
+                    <button id="send-btn" type="submit" class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg mt-2">Send Files</button>
+                    <textarea id="message-input" rows="2" placeholder="Type a message..." style="width:100%;margin-top:1em;padding:0.7em;border-radius:6px;border:1.5px solid #ddd;font-size:1em;"></textarea>
+                    <button id="send-message-btn" type="button" class="w-full bg-accent hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg mt-2">Send Message</button>
+                    <div id="progress-container" style="display:none; margin-top:1em;">
+                        <div style="width:100%;background:#eee;border-radius:6px;overflow:hidden;height:22px;">
+                            <div id="progress-bar" style="height:22px;width:0%;background:#3B82F6;transition:width 0.3s;"></div>
+                        </div>
+                        <div id="progress-text" style="margin-top:4px;font-size:0.95em;color:#333;text-align:center;">0%</div>
+                    </div>
+                    
+                </form>
+            </div>
+        </main>
+        <script>
+            let sessionId = null;
+            let uploadUrl = null;
+            let scanned = false;
+            const scanBtn = document.getElementById('scan-btn');
+            const qrReaderDiv = document.getElementById('qr-reader');
+            const statusDiv = document.getElementById('status');
+            const uploadForm = document.getElementById('upload-form');
+            const fileInput = document.getElementById('file-input');
+            const sendBtn = document.getElementById('send-btn');
+
+            // Check for existing session on page load
+            window.addEventListener('DOMContentLoaded', function() {
+                checkExistingSession();
+            });
+
+            function checkExistingSession() {
+                const storedData = localStorage.getItem('fileSyncSession');
+                if (storedData) {
+                    try {
+                        const sessionData = JSON.parse(storedData);
+                        const now = Date.now();
+                        
+                        // Check if session is still valid (15 minutes = 900000ms)
+                        if (now - sessionData.timestamp < 900000) {
+                            sessionId = sessionData.sessionId;
+                            uploadUrl = sessionData.uploadUrl;
+                            
+                            // Hide scan button and show upload interface directly
+                            scanBtn.style.display = 'none';
+                            statusDiv.style.display = '';
+                            uploadForm.style.display = '';
+                            
+                            // Show time remaining
+                            const timeLeft = Math.ceil((900000 - (now - sessionData.timestamp)) / 60000);
+                            statusDiv.textContent = `Session active! Select files to send. (${timeLeft} min remaining)`;
+                            
+                            // Add button to view session files
+                            addViewSessionButton();
+                            
+                            // Add option to scan new QR code
+                            addNewScanButton();
+                        } else {
+                            // Session expired, clear it
+                            localStorage.removeItem('fileSyncSession');
+                        }
+                    } catch (e) {
+                        localStorage.removeItem('fileSyncSession');
+                    }
+                }
+            }
+
+            function addViewSessionButton() {
+                // Remove any existing view session button
+                const existingViewBtn = document.getElementById('view-session-btn');
+                if (existingViewBtn) existingViewBtn.remove();
+                
+                const viewSessionBtn = document.createElement('button');
+                viewSessionBtn.textContent = 'View Session Files';
+                viewSessionBtn.id = 'view-session-btn';
+                viewSessionBtn.className = 'w-full bg-accent hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg mt-2';
+                viewSessionBtn.onclick = () => {
+                    window.location.href = `/downloads/${sessionId}`;
+                };
+                uploadForm.appendChild(viewSessionBtn);
+            }
+
+            function addNewScanButton() {
+                // Remove any existing new scan button
+                const existingNewBtn = document.getElementById('new-scan-btn');
+                if (existingNewBtn) existingNewBtn.remove();
+                
+                const newScanBtn = document.createElement('button');
+                newScanBtn.textContent = 'Scan New QR Code';
+                newScanBtn.id = 'new-scan-btn';
+                newScanBtn.className = 'w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mt-2 text-sm';
+                newScanBtn.onclick = () => {
+                    // Clear existing session
+                    localStorage.removeItem('fileSyncSession');
+                    sessionId = null;
+                    uploadUrl = null;
+                    
+                    // Reset UI to scan mode
+                    scanBtn.style.display = '';
+                    uploadForm.style.display = 'none';
+                    statusDiv.style.display = 'none';
+                    
+                    // Remove added buttons
+                    document.getElementById('view-session-btn')?.remove();
+                    document.getElementById('new-scan-btn')?.remove();
+                    document.getElementById('view-files-btn')?.remove();
+                    
+                    // Reset scan button
+                    scanBtn.textContent = 'Scan QR Code';
+                    scanBtn.disabled = false;
+                };
+                uploadForm.appendChild(newScanBtn);
+            }
+
+            function storeSession(sessionId, uploadUrl) {
+                const sessionData = {
+                    sessionId: sessionId,
+                    uploadUrl: uploadUrl,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('fileSyncSession', JSON.stringify(sessionData));
+            }
+                    scanBtn.onclick = () => {
+                        scanBtn.disabled = true;
+                        qrReaderDiv.style.display = '';
+                        statusDiv.style.display = '';
+                        statusDiv.textContent = 'Point your camera at the QR code...';
+                        uploadForm.style.display = 'none';
+                        scanned = false; // Reset scanned flag
+                        let qr;
+                        try {
+                            qr = new Html5Qrcode("qr-reader");
+                        } catch (e) {
+                            statusDiv.textContent = 'QR scanner failed to initialize. Try a different browser.';
+                            scanBtn.disabled = false;
+                            return;
+                        }
+                        qr.start({ facingMode: "environment" }, {
+                            fps: 10,
+                            qrbox: 250
+                        }, qrCodeMessage => {
+                            if (scanned) return;
+                            scanned = true;
+                            qr.stop();
+                            qrReaderDiv.style.display = 'none';
+                            // Parse sessionId from QR code URL
+                            try {
+                                const url = new URL(qrCodeMessage);
+                                const parts = url.pathname.split('/');
+                                // Expect /session/<sessionId>/status
+                                const idx = parts.indexOf('session');
+                                if (idx !== -1 && parts.length > idx+1) {
+                                    sessionId = parts[idx+1];
+                                    uploadUrl = url.origin + '/api/upload/' + sessionId;
+                                    
+                                    // Store session in localStorage
+                                    storeSession(sessionId, uploadUrl);
+                                    
+                                    // Hide scan button and show upload interface
+                                    scanBtn.style.display = 'none';
+                                    statusDiv.textContent = 'Connected! Select files to send. (Session valid for 15 minutes)';
+                                    uploadForm.style.display = '';
+                                    
+                                    // Add buttons for viewing session and scanning new QR
+                                    addViewSessionButton();
+                                    addNewScanButton();
+                                } else {
+                                    statusDiv.textContent = 'Invalid QR code.';
+                                    scanBtn.disabled = false;
+                                }
+                            } catch (e) {
+                                statusDiv.textContent = 'Invalid QR code.';
+                                scanBtn.disabled = false;
+                            }
+                        }, err => {
+                            let msg = 'Camera error: ' + err;
+                            if (err && err.name === 'NotAllowedError') {
+                                msg = 'Camera access denied. Please allow camera permissions in your browser settings.';
+                            } else if (err && err.name === 'NotFoundError') {
+                                msg = 'No camera found. Try a different device or browser.';
+                            }
+                            statusDiv.textContent = msg;
+                            scanBtn.disabled = false;
+                        }).catch((err) => {
+                            statusDiv.textContent = 'Unable to start camera: ' + err;
+                            scanBtn.disabled = false;
+                        });
+                    };
+            // Send message button handler
+            document.getElementById('send-message-btn').onclick = async () => {
+                if (!sessionId) return;
+                const msg = document.getElementById('message-input').value.trim();
+                if (!msg) {
+                    statusDiv.textContent = 'Please enter a message.';
+                    return;
+                }
+                document.getElementById('send-message-btn').disabled = true;
+                statusDiv.textContent = 'Sending message...';
+                try {
+                    const res = await fetch(`/api/message/${sessionId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: msg })
+                    });
+                    if (!res.ok) throw new Error(await res.text());
+                    statusDiv.textContent = 'Message sent!';
+                    document.getElementById('message-input').value = '';
+                } catch (err) {
+                    statusDiv.textContent = 'Failed to send message: ' + err;
+                }
+                document.getElementById('send-message-btn').disabled = false;
+            };
+
+            uploadForm.onsubmit = async (e) => {
+                e.preventDefault();
+                if (!sessionId || !uploadUrl) return;
+                const files = fileInput.files;
+                if (!files.length) {
+                    statusDiv.textContent = 'Please select files.';
+                    return;
+                }
+                sendBtn.disabled = true;
+                statusDiv.textContent = 'Uploading...';
+
+                // Show progress bar
+                const progressContainer = document.getElementById('progress-container');
+                const progressBar = document.getElementById('progress-bar');
+                const progressText = document.getElementById('progress-text');
+                progressContainer.style.display = '';
+                progressBar.style.width = '0%';
+                progressText.textContent = '0%';
+
+                let totalBytes = 0;
+                for (let i = 0; i < files.length; i++) totalBytes += files[i].size;
+                let uploadedBytes = 0;
+
+                for (let i = 0; i < files.length; i++) {
+                    const formData = new FormData();
+                    formData.append('file', files[i]);
+                    await new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', uploadUrl);
+                        xhr.upload.onprogress = function(e) {
+                            if (e.lengthComputable) {
+                                const currentUploaded = uploadedBytes + e.loaded;
+                                const percent = Math.max(1, Math.round((currentUploaded / totalBytes) * 100));
+                                progressBar.style.width = percent + '%';
+                                const mbSent = (currentUploaded / (1024*1024)).toFixed(2);
+                                const mbTotal = (totalBytes / (1024*1024)).toFixed(2);
+                                progressText.textContent = `${mbSent} MB / ${mbTotal} MB (${percent}%)`;
+                            }
+                        };
+                        xhr.onload = function() {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                uploadedBytes += files[i].size;
+                                resolve();
+                            } else {
+                                reject(xhr.responseText || xhr.statusText);
+                            }
+                        };
+                        xhr.onerror = function() {
+                            reject('Network error');
+                        };
+                        xhr.send(formData);
+                    }).catch((err) => {
+                        let msg = 'Upload failed: ' + err;
+                        statusDiv.textContent = msg;
+                        sendBtn.disabled = false;
+                        progressContainer.style.display = 'none';
+                        throw new Error(msg);
+                    });
+                }
+                // Final update to 100%
+                progressBar.style.width = '100%';
+                const mbTotal = (totalBytes / (1024*1024)).toFixed(2);
+                progressText.textContent = `${mbTotal} MB / ${mbTotal} MB (100%)`;
+                statusDiv.textContent = 'Files sent! You can send more files or view uploads.';
+                sendBtn.disabled = false;
+                fileInput.value = ''; // Clear file input for next upload
+                progressContainer.style.display = 'none';
+
+                // Add button to view downloads
+                const viewBtn = document.createElement('button');
+                viewBtn.textContent = 'View Uploaded Files';
+                viewBtn.className = 'w-full bg-secondary hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg mt-2';
+                viewBtn.onclick = () => {
+                    window.location.href = `/downloads/${sessionId}`;
+                };
+
+                // Remove any existing view button and add new one
+                const existingBtn = document.getElementById('view-files-btn');
+                if (existingBtn) existingBtn.remove();
+                viewBtn.id = 'view-files-btn';
+                uploadForm.appendChild(viewBtn);
+            };
+        </script>
+</body>
+</html>

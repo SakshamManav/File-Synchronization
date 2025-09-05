@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "File Sync QR Extension",
+  "version": "1.0.0",
+  "description": "Sync files and messages between devices using QR codes and session management.",
+  "permissions": [
+    "storage",
+    "alarms",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://e8fb5a98c01660.lhr.life/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "128": "icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "128": "icon128.png"
+  }
+}
