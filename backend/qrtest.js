@@ -4,7 +4,7 @@ const QRCode = require('qrcode');
 
 async function main() {
   // Use native fetch (Node 18+)
-  const res = await fetch('https://e8fb5a98c01660.lhr.life', {
+  const res = await fetch('https://e0bd612f814534.lhr.life', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -17,7 +17,7 @@ async function main() {
 
   // Replace with your actual laptop IP address
   const laptopIp = '192.168.29.16'; // <-- CHANGE THIS
-  const statusUrl = ` https://e8fb5a98c01660.lhr.life/session/${sessionId}/status`;
+  const statusUrl = ` https://e0bd612f814534.lhr.life/session/${sessionId}/status`;
 
   QRCode.toDataURL(statusUrl, function (err, dataUrl) {
     if (err) {

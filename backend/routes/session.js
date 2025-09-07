@@ -142,27 +142,26 @@ router.get('/downloads/:sessionId', async (req, res) => {
 	}
 
 	let fileListHtml = '';
-		// If session expired, remove files and messages from disk and mark session expired
-		if (sess.expiresAt && new Date() > sess.expiresAt) {
-			console.log(`[DEBUG] Session expired: ${sessionId} - removing uploads and messages`);
-			const uploadDir = path.join(__dirname, '..', 'uploads', sessionId);
-			try {
-				if (fs.existsSync(uploadDir)) {
-					// remove directory and its contents
-					fs.rmSync(uploadDir, { recursive: true, force: true });
-					console.log(`[DEBUG] Removed upload directory: ${uploadDir}`);
-				}
-			} catch (err) {
-				console.error(`[DEBUG] Failed to remove upload dir for ${sessionId}:`, err);
+	// If session expired, remove files from disk and mark session expired
+	if (sess.expiresAt && new Date() > sess.expiresAt) {
+		console.log(`[DEBUG] Session expired: ${sessionId} - removing uploads`);
+		const uploadDir = path.join(__dirname, '..', 'uploads', sessionId);
+		try {
+			if (fs.existsSync(uploadDir)) {
+				// remove directory and its contents
+				fs.rmSync(uploadDir, { recursive: true, force: true });
+				console.log(`[DEBUG] Removed upload directory: ${uploadDir}`);
 			}
-			sess.status = 'expired';
-			sess.uploads = [];
-			sess.messages = [];
-			await sess.save();
-			fileListHtml = '<p>Session has ended and uploaded files have been removed.</p>';
-			const htmlExpired = renderDownloadsPage({ sessionId, status: sess.status, fileListHtml, messagesHtml: '' });
-			return res.send(htmlExpired);
+		} catch (err) {
+			console.error(`[DEBUG] Failed to remove upload dir for ${sessionId}:`, err);
 		}
+		sess.status = 'expired';
+		sess.uploads = [];
+		await sess.save();
+		fileListHtml = '<p>Session has ended and uploaded files have been removed.</p>';
+		const htmlExpired = renderDownloadsPage({ sessionId, status: sess.status, fileListHtml });
+		return res.send(htmlExpired);
+	}
 	if (diskUploads.length === 0) {
 		fileListHtml = '<p>No files uploaded yet.</p>';
 	} else {
@@ -196,7 +195,7 @@ router.post('/', async (req, res) => {
 		const sessionId = uuidv4();
 		const ttlSeconds = 60 * 15; // 15 minutes
 		const sess = await createSession(sessionId, ttlSeconds);
-	const uploadUrl = `https://e8fb5a98c01660.lhr.life/api/upload/${sessionId}`;
+	const uploadUrl = `https://e0bd612f814534.lhr.life/api/upload/${sessionId}`;
 		res.json({
 			sessionId,
 			uploadUrl,

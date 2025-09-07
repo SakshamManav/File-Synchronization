@@ -1,14 +1,12 @@
 const mongoose = require("mongoose");
-require('dotenv').config();
 function connectdb() {
   try {
-    const uri = process.env.mongo_uri || "mongodb://localhost:27017/FileSynchronization";
-    mongoose.connect(uri, {
+    mongoose.connect("mongodb://localhost:27017/FileSynchronization", {
       // useNewUrlParser: true,
     });
-    console.log(uri.startsWith('mongodb+srv://') ? "db connected successfully! (cloud)" : "db connected successfully! (localhost)");
+    console.log("db connected succesfully !");
   } catch (error) {
-  console.error("db connection failed!", error);
+    console.log("db connection failed !", error);
   }
 }
 

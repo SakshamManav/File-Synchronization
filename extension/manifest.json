@@ -9,7 +9,7 @@
     "tabs"
   ],
   "host_permissions": [
-    "https://e8fb5a98c01660.lhr.life/*"
+  "https://e0bd612f814534.lhr.life/*"
   ],
   "background": {
     "service_worker": "background.js"

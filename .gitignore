@@ -1,4 +1,4 @@
+node_modules/
+.env
 key
 key.pub
-backend/.env
-node_modules/

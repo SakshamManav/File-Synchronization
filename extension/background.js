@@ -4,7 +4,7 @@ chrome.runtime.onInstalled.addListener(() => {
     console.log('File Sync QR Extension installed');
 });
 
-const API_BASE_URL = 'https://e8fb5a98c01660.lhr.life';
+const API_BASE_URL = 'https://e0bd612f814534.lhr.life';
 
 // Listen for messages from popup to start polling or open downloads
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

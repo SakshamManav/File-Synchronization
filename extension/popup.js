@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://e8fb5a98c01660.lhr.life';
+const API_BASE_URL = 'https://e0bd612f814534.lhr.life';
 
 let currentSessionId = null;
 let pollInterval = null;

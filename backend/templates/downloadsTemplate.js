@@ -1,7 +1,7 @@
 // Small HTML renderer for the downloads page.
 // Export a function that returns the full HTML string given required values.
 function renderDownloadsPage({ sessionId, status, fileListHtml, messagesHtml }) {
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://e8fb5a98c01660.lhr.life/session/' + sessionId + '/status')}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://e0bd612f814534.lhr.life/session/' + sessionId + '/status')}`;
   let leftPanelHtml = '';
   if (status === 'expired') {
     leftPanelHtml = `
@@ -71,12 +71,8 @@ function renderDownloadsPage({ sessionId, status, fileListHtml, messagesHtml }) 
             const fileListEl = document.getElementById('file-list');
             const messagesListEl = document.getElementById('messages-list');
 
-            // Track already shown files/messages
-            let shownFiles = new Set();
-            let shownMessages = new Set();
-
-            function appendFiles(uploads) {
-              if (!uploads || uploads.length === 0) return;
+            function buildList(uploads) {
+              if (!uploads || uploads.length === 0) return '<p style="text-align:center;color:#888;font-size:1.1em;">No files uploaded yet.</p>';
               function getPreview(u) {
                 var ext = u.filename.split('.').pop().toLowerCase();
                 var previewUrl = '/preview/' + sessionId + '/' + encodeURIComponent(u.filename);
@@ -94,32 +90,13 @@ function renderDownloadsPage({ sessionId, status, fileListHtml, messagesHtml }) 
                   return '<div style="font-size:2.5em;color:#bbb;">📄</div>';
                 }
               }
-              uploads.forEach(function(u) {
-                if (shownFiles.has(u.filename)) return;
-                shownFiles.add(u.filename);
+              var items = uploads.map(function(u) {
                 var fname = encodeURIComponent(u.filename);
                 var preview = '<div class="file-preview">' + getPreview(u) + '</div>';
                 var info = '<div class="file-info"><div class="file-name">' + u.filename + '</div><div class="file-meta">' + (u.size/1024).toFixed(1) + ' KB<br>' + new Date(u.uploadedAt).toLocaleString() + '</div></div>';
-                var card = document.createElement('div');
-                card.className = 'file-card';
-                card.innerHTML = preview + info + '<a href="/download/' + sessionId + '/' + fname + '" class="download-btn">Download</a>';
-                fileListEl.appendChild(card);
-              });
-            }
-
-            function appendMessages(messages) {
-              if (!messages || messages.length === 0) return;
-              let container = messagesListEl;
-              messages.forEach(function(m) {
-                let key = m.text + (m.sentAt || '');
-                if (shownMessages.has(key)) return;
-                shownMessages.add(key);
-                var msgDiv = document.createElement('div');
-                msgDiv.style = 'background:#f1f8ff;padding:0.7em 1em;border-radius:8px;margin-bottom:0.5em;max-width:90%;word-break:break-word;';
-                msgDiv.innerHTML = '<span style="color:#333;">' + (m.text || '') + '</span><br>' +
-                  '<span style="font-size:0.85em;color:#888;">' + (m.sentAt ? new Date(m.sentAt).toLocaleString() : '') + '</span>';
-                container.appendChild(msgDiv);
-              });
+                return '<div class="file-card">' + preview + info + '<a href="/download/' + sessionId + '/' + fname + '" class="download-btn">Download</a></div>';
+              }).join('');
+              return items;
             }
 
             function buildMessages(messages) {
@@ -141,9 +118,10 @@ function renderDownloadsPage({ sessionId, status, fileListHtml, messagesHtml }) 
                 var data = await res.json();
                 // update status line
                 if (statusEl) statusEl.innerHTML = '<strong>Status:</strong> ' + (data.status || 'unknown');
-                // append only new files/messages
-                appendFiles(data.uploads || []);
-                appendMessages(data.messages || []);
+                // update file list
+                fileListEl.innerHTML = buildList(data.uploads || []);
+                // update messages
+                if (messagesListEl) messagesListEl.innerHTML = buildMessages(data.messages || []);
               } catch (err) {
                 // ignore temporary errors
                 console.warn('Polling error', err);
@@ -151,11 +129,6 @@ function renderDownloadsPage({ sessionId, status, fileListHtml, messagesHtml }) 
             }
 
             // initial quick poll and then interval
-            // Initial load: show all files/messages
-            fileListEl.innerHTML = '';
-            messagesListEl.innerHTML = '';
-            shownFiles = new Set();
-            shownMessages = new Set();
             pollOnce();
             setInterval(pollOnce, 5000);
           })();
