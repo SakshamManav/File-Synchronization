@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://e0bd612f814534.lhr.life';
+const API_BASE_URL = 'https://file-synchronization.onrender.com';
 
 let currentSessionId = null;
 let pollInterval = null;

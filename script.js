@@ -3,7 +3,7 @@
         let cameraStream = null;
         
         // API Configuration
-    const API_BASE_URL = 'https://e0bd612f814534.lhr.life/api';
+    const API_BASE_URL = 'https://file-synchronization.onrender.com/api';
 
         // Check camera availability on page load
         window.addEventListener('DOMContentLoaded', function() {

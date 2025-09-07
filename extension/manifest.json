@@ -9,7 +9,7 @@
     "tabs"
   ],
   "host_permissions": [
-  "https://e0bd612f814534.lhr.life/*"
+  "https://file-synchronization.onrender.com/*"
   ],
   "background": {
     "service_worker": "background.js"
