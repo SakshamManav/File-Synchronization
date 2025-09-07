@@ -195,7 +195,7 @@ router.post('/', async (req, res) => {
 		const sessionId = uuidv4();
 		const ttlSeconds = 60 * 15; // 15 minutes
 		const sess = await createSession(sessionId, ttlSeconds);
-	const uploadUrl = `https://e0bd612f814534.lhr.life/api/upload/${sessionId}`;
+	const uploadUrl = `https://file-synchronization.onrender.com/api/upload/${sessionId}`;
 		res.json({
 			sessionId,
 			uploadUrl,

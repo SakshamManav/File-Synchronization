@@ -1,7 +1,7 @@
 // Small HTML renderer for the downloads page.
 // Export a function that returns the full HTML string given required values.
 function renderDownloadsPage({ sessionId, status, fileListHtml, messagesHtml }) {
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://e0bd612f814534.lhr.life/session/' + sessionId + '/status')}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://file-synchronization.onrender.com/session/' + sessionId + '/status')}`;
   let leftPanelHtml = '';
   if (status === 'expired') {
     leftPanelHtml = `
