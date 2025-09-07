@@ -1,8 +1,13 @@
 const mongoose = require("mongoose");
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 function connectdb() {
   try {
-    mongoose.connect("mongodb://localhost:27017/FileSynchronization", {
-      // useNewUrlParser: true,
+    const uri =
+      process.env.mongo_uri || "mongodb://localhost:27017/FileSynchronization";
+    mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      maxPoolSize: 20,
     });
     console.log("db connected succesfully !");
   } catch (error) {
