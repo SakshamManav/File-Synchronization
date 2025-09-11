@@ -34,9 +34,10 @@ setInterval(reloadWebsite, interval);
 
 app.use(
   cors({
-    origin: "*", // Allow all origins for development
+    origin: "https://file-synchronization-client.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
   })
 );
 app.use(express.json());
