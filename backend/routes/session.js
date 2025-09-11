@@ -194,7 +194,7 @@ router.get('/download/:sessionId/:filename', (req, res) => {
 router.post('/', async (req, res) => {
 	try {
 	const sessionId = uuidv4();
-	const ttlSeconds = 10; // 10 seconds for quick expiry testing
+	const ttlSeconds = 60 * 15; // 15 minutes
 	const sess = await createSession(sessionId, ttlSeconds);
 	const uploadUrl = `https://file-synchronization.onrender.com/api/upload/${sessionId}`;
 		res.json({

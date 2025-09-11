@@ -8,7 +8,7 @@ function renderDownloadsPage({ sessionId, status, fileListHtml, messagesHtml }) 
       <h1>Session</h1>
       <div style="color:#d32f2f;font-size:1.1em;margin:2em 0;text-align:center;">
         <strong>Session Expired</strong><br>
-        Please generate a new QR from the extension to start a new session.
+        Please generate a new QR to start a new session.
       </div>
     `;
   } else {
