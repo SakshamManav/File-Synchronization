@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Sync QR - Desktop</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">File Sync QR</div>
+            <div class="subtitle">Mobile to Laptop File Transfer</div>
+        </div>
+
+        <div id="status" class="status generating">
+            <div class="loading"></div>
+            Generating QR Code...
+        </div>
+
+        <div class="qr-container">
+            <img id="qr-code" class="qr-code hidden" src="" alt="QR Code">
+            <div id="qr-placeholder">QR Code will appear here</div>
+        </div>
+
+        <div class="instructions">
+            <strong>Instructions:</strong><br>
+            1. Open the given website in your mobile<br>
+            2. Scan the QR code above<br>
+            3. Select and upload files from mobile<br>
+            4. Files will automatically available on download page. <br>
+            5. If cant find qr code go to download page using button below or generate new qr code.
+        </div>
+
+        <div class="button-container">
+            <button id="new-session-btn" class="btn btn-secondary">Generate New QR</button>
+            <button id="open-downloads-btn" class="btn btn-primary">Open Downloads Page</button>
+        </div>
+
+        <div class="footer">
+            <p>Scan QR code with your mobile device to start transferring files</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

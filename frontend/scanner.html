@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner - File Sync</title>
+    <link rel="stylesheet" href="scanner-styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">QR Code Scanner</div>
+            <div class="subtitle">Scan QR codes to transfer data</div>
+        </div>
+
+        <div class="scanner-container">
+            <div id="scanner" class="scanner-box">
+                <div id="scanner-placeholder" class="scanner-placeholder">
+                    <div class="camera-icon">📷</div>
+                    <p>Click "Start Scanner" to begin</p>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="start-scanner-btn" class="btn btn-primary">Start Scanner</button>
+                <button id="stop-scanner-btn" class="btn btn-secondary hidden">Stop Scanner</button>
+            </div>
+        </div>
+
+        <div id="result-container" class="result-container hidden">
+            <div class="result-header">
+                <h3>Scanned Result:</h3>
+            </div>
+            <div id="scanned-result" class="scanned-result"></div>
+            
+            <div class="transfer-options">
+                <h4>Transfer Options:</h4>
+                <div class="option-group">
+                    <label for="target-url">Target Website URL:</label>
+                    <input type="url" id="target-url" placeholder="https://example.com" class="url-input">
+                </div>
+                
+                <div class="transfer-methods">
+                    <button id="transfer-post" class="btn btn-primary">Send via POST</button>
+                    <button id="transfer-params" class="btn btn-secondary">Send as URL Parameters</button>
+                    <button id="transfer-newtab" class="btn btn-secondary">Open in New Tab</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="status" class="status hidden"></div>
+
+        <div class="instructions">
+            <h4>How to use:</h4>
+            <ol>
+                <li>Click "Start Scanner" to activate your camera</li>
+                <li>Point your camera at a QR code</li>
+                <li>Once scanned, enter the target website URL</li>
+                <li>Choose how to transfer the data</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Include html5-qrcode library -->
+    <script src="../backend/html5-qrcode.min.js"></script>
+    <script src="scanner.js"></script>
+</body>
+</html>
