@@ -18,14 +18,36 @@
             Generating QR Code...
         </div>
 
-        <div class="qr-container">
-            <img id="qr-code" class="qr-code hidden" src="" alt="QR Code">
-            <div id="qr-placeholder">QR Code will appear here</div>
-        </div>
+
+                <div class="qr-container">
+                        <img id="qr-code" class="qr-code hidden" src="" alt="QR Code">
+                        <div id="qr-placeholder">QR Code will appear here</div>
+                </div>
+                <div style="text-align:center;margin-top:0.5em;">
+                    <span id="scroll-down-icon" style="display:inline-block;cursor:pointer;animation:bounce 1.2s infinite;">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </span>
+                </div>
+        <style>
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(10px); }
+            }
+        </style>
+        <script>
+            // ...existing code...
+            // Scroll down icon click handler
+            const scrollIcon = document.getElementById('scroll-down-icon');
+            if (scrollIcon) {
+                scrollIcon.addEventListener('click', function() {
+                    window.scrollBy({ top: window.innerHeight * 0.6, behavior: 'smooth' });
+                });
+            }
+        </script>
 
         <div class="instructions">
             <strong>Instructions:</strong><br>
-            1. Open the given website in your mobile<br>
+            1. Open the given website -(<span id="copy-url" class="copy-url" style="color:#1976d2;cursor:pointer;text-decoration:underline;" title="Click to copy">https://file-synchronization.onrender.com/</span>) in your mobile <span id="copy-status" style="color:green;font-size:0.95em;display:none;">Copied!</span><br>
             2. Scan the QR code above<br>
             3. Select and upload files from mobile<br>
             4. Files will automatically available on download page. <br>
@@ -42,6 +64,21 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+        <script src="app.js"></script>
+        <script>
+            const urlSpan = document.getElementById('copy-url');
+            const statusSpan = document.getElementById('copy-status');
+            if (urlSpan) {
+                urlSpan.addEventListener('click', function() {
+                    const url = urlSpan.textContent.trim();
+                    navigator.clipboard.writeText(url).then(() => {
+                        if (statusSpan) {
+                            statusSpan.style.display = 'inline';
+                            setTimeout(() => { statusSpan.style.display = 'none'; }, 1200);
+                        }
+                    });
+                });
+            }
+        </script>
 </body>
 </html>
