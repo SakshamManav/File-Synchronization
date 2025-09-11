@@ -121,7 +121,13 @@ function renderDownloadsPage({ sessionId, status, fileListHtml, messagesHtml }) 
                 // update file list
                 fileListEl.innerHTML = buildList(data.uploads || []);
                 // update messages
-                if (messagesListEl) messagesListEl.innerHTML = buildMessages(data.messages || []);
+                if (messagesListEl) {
+                  if (data.status === 'expired') {
+                    messagesListEl.innerHTML = '';
+                  } else {
+                    messagesListEl.innerHTML = buildMessages(data.messages || []);
+                  }
+                }
               } catch (err) {
                 // ignore temporary errors
                 console.warn('Polling error', err);
