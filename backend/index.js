@@ -19,16 +19,6 @@ const io = new Server(server, {
 const url = ` https://file-synchronization.onrender.com`;
 const interval = 60000;
 
-function reloadWebsite() {
-  axios
-    .get(url)
-    .then((response) => {
-      console.log("website reloded");
-    })
-    .catch((error) => {
-      console.error(`Error : ${error.message}`);
-    });
-}
 
 setInterval(reloadWebsite, interval);
 
