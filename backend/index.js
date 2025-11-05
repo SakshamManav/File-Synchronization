@@ -20,7 +20,7 @@ const url = ` https://file-synchronization.onrender.com`;
 const interval = 60000;
 
 
-setInterval(reloadWebsite, interval);
+// setInterval(reloadWebsite, interval);
 
 app.use(
   cors({
