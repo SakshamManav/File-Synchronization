@@ -81,7 +81,7 @@ async function initializeWebApp() {
         qrPlaceholder.style.display = 'none';
 
     statusDiv.className = 'status ready';
-    statusDiv.innerHTML = '✅ QR Code Ready - Scan with Mobile Device';
+    statusDiv.innerHTML = 'QR Code Ready - Scan with Mobile Device';
     openDownloadsBtn.disabled = false;
     openDownloadsBtn.style.opacity = 1;
     openDownloadsBtn.title = 'Open downloads for this session';
@@ -95,7 +95,7 @@ async function initializeWebApp() {
     } catch (error) {
         console.error('Error creating session:', error);
         statusDiv.className = 'status error';
-        statusDiv.innerHTML = `❌ Failed to create session: ${error.message}`;
+        statusDiv.innerHTML = `Failed to create session: ${error.message}`;
         newSessionBtn.classList.remove('hidden');
     }
 }
@@ -164,7 +164,7 @@ function showConnectedState() {
     const openDownloadsBtn = document.getElementById('open-downloads-btn');
 
     statusDiv.className = 'status connected';
-    statusDiv.innerHTML = '🔗 Mobile Device Connected - Waiting for Files...';
+    statusDiv.innerHTML = 'Mobile Device Connected - Waiting for Files...';
 
     // Make QR code clickable to open downloads page
     qrCodeImg.style.cursor = 'pointer';

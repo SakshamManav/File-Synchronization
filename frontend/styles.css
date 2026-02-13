@@ -7,7 +7,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #254F22;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -32,12 +32,8 @@ body {
 .title {
     font-size: 28px;
     font-weight: bold;
-    color: #333;
+    color: #254F22;
     margin-bottom: 8px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .subtitle {
@@ -56,7 +52,7 @@ body {
 }
 
 .qr-container:hover {
-    border-color: #667eea;
+    border-color: #254F22;
     background: #f8f9ff;
 }
 
@@ -86,25 +82,25 @@ body {
 }
 
 .status.generating {
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    background: #e3f2fd;
     color: #1565c0;
     border: 2px solid #2196f3;
 }
 
 .status.ready {
-    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    background: #e8f5e8;
     color: #2e7d32;
     border: 2px solid #4caf50;
 }
 
 .status.connected {
-    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    background: #fff3e0;
     color: #f57c00;
     border: 2px solid #ff9800;
 }
 
 .status.error {
-    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    background: #ffebee;
     color: #d32f2f;
     border: 2px solid #f44336;
 }
@@ -117,7 +113,7 @@ body {
     padding: 20px;
     background: #f8f9fa;
     border-radius: 10px;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #254F22;
 }
 
 .button-container {
@@ -140,14 +136,14 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: #254F22;
     color: white;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 15px rgba(37, 79, 34, 0.4);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    box-shadow: 0 8px 25px rgba(37, 79, 34, 0.6);
 }
 
 .btn-primary:active {
