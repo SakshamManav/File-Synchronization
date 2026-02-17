@@ -20,7 +20,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     padding: 40px;
-    max-width: 450px;
+    max-width: 1000px;
     width: 100%;
     text-align: center;
 }
@@ -42,13 +42,33 @@ body {
     font-weight: 500;
 }
 
-.qr-container {
+.main-content {
+    display: flex;
+    gap: 30px;
     margin: 30px 0;
+    align-items: flex-start;
+}
+
+.qr-section {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.instructions-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.qr-container {
     padding: 30px;
     border: 2px dashed #e0e0e0;
     border-radius: 15px;
     background: #fafafa;
     transition: all 0.3s ease;
+    display: inline-block;
 }
 
 .qr-container:hover {
@@ -108,12 +128,60 @@ body {
 .instructions {
     font-size: 14px;
     color: #555;
-    line-height: 1.6;
-    margin: 25px 0;
-    padding: 20px;
+    line-height: 1.8;
+    padding: 25px;
     background: #f8f9fa;
-    border-radius: 10px;
+    border-radius: 12px;
     border-left: 4px solid #254F22;
+    text-align: left;
+    height: 100%;
+}
+
+.disclaimer {
+    color: #b71c1c;
+    background: #ffebee;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.instruction-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #254F22;
+    margin-bottom: 15px;
+}
+
+.instruction-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.instruction-list li {
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.copy-url {
+    color: #1976d2;
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.copy-url:hover {
+    color: #254F22;
+}
+
+.copy-status {
+    color: #2e7d32;
+    font-size: 0.9em;
+    display: none;
+    margin-left: 5px;
+    font-weight: 600;
 }
 
 .button-container {
@@ -194,6 +262,21 @@ body {
 }
 
 /* Responsive design */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .qr-section {
+        width: 100%;
+    }
+    
+    .instructions-section {
+        width: 100%;
+    }
+}
+
 @media (max-width: 480px) {
     .container {
         padding: 30px 20px;
@@ -220,6 +303,10 @@ body {
     .instructions {
         font-size: 13px;
         padding: 15px;
+    }
+    
+    .instruction-list li {
+        margin-bottom: 10px;
     }
     
     .btn {

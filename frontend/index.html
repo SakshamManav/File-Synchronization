@@ -26,41 +26,32 @@
             Generating QR Code...
         </div>
 
-
+        <div class="main-content">
+            <div class="qr-section">
                 <div class="qr-container">
-                        <img id="qr-code" class="qr-code hidden" src="" alt="QR Code">
-                        <div id="qr-placeholder">QR Code will appear here</div>
+                    <img id="qr-code" class="qr-code hidden" src="" alt="QR Code">
+                    <div id="qr-placeholder">QR Code will appear here</div>
                 </div>
-                <div style="text-align:center;margin-top:0.5em;">
-                    <span id="scroll-down-icon" style="display:inline-block;cursor:pointer;animation:bounce 1.2s infinite;">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </span>
-                </div>
-        <style>
-            @keyframes bounce {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(10px); }
-            }
-        </style>
-        <script>
-            // ...existing code...
-            // Scroll down icon click handler
-            const scrollIcon = document.getElementById('scroll-down-icon');
-            if (scrollIcon) {
-                scrollIcon.addEventListener('click', function() {
-                    window.scrollBy({ top: window.innerHeight * 0.6, behavior: 'smooth' });
-                });
-            }
-        </script>
+            </div>
 
-        <div class="instructions">
-            <div style="color:#b71c1c;font-size:1.05em;margin-bottom:0.7em;"><strong>Disclaimer:</strong> QR code scanning and connection can take up to 1 minute if the server is waking up (free Render tier).</div>
-            <strong>Instructions:</strong><br>
-            1. Open the given website -(<span id="copy-url" class="copy-url" style="color:#1976d2;cursor:pointer;text-decoration:underline;" title="Click to copy">https://file-synchronization.onrender.com/</span>) in your mobile <span id="copy-status" style="color:green;font-size:0.95em;display:none;">Copied!</span><br>
-            2. Scan the QR code above <br>
-            3. Select and upload files from mobile<br>
-            4. Files will automatically available on download page. <br>
-            5. If can't find QR code above go to download page using button below or generate new qr code.
+            <div class="instructions-section">
+                <div class="instructions">
+                    <div class="disclaimer">
+                        <strong>⚠ Disclaimer:</strong> QR code scanning and connection can take up to 1 minute if the server is waking up (free Render tier).
+                    </div>
+                    <div class="instruction-title">Instructions:</div>
+                    <ol class="instruction-list">
+                        <li>
+                            Open the website <span id="copy-url" class="copy-url" title="Click to copy">https://file-synchronization.onrender.com/</span> in your mobile 
+                            <span id="copy-status" class="copy-status">✓ Copied!</span>
+                        </li>
+                        <li>Scan the QR code on the left</li>
+                        <li>Select and upload files from mobile</li>
+                        <li>Files will automatically be available on download page</li>
+                        <li>If you can't find the QR code, use the buttons below to generate a new one or go to downloads</li>
+                    </ol>
+                </div>
+            </div>
         </div>
 
         <div class="button-container">
@@ -82,7 +73,7 @@
                     const url = urlSpan.textContent.trim();
                     navigator.clipboard.writeText(url).then(() => {
                         if (statusSpan) {
-                            statusSpan.style.display = 'inline';
+                            statusSpan.style.display = 'inline-block';
                             setTimeout(() => { statusSpan.style.display = 'none'; }, 1200);
                         }
                     });
